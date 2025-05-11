@@ -1,0 +1,91 @@
+{
+    "GlobalConfiguration": {
+        "BaseUrl": "https://localhost:7000"
+    },
+    "Routes": [
+        {
+            "UpstreamPathTemplate": "/gateway/api/user",
+            "UpstreamHttpMethod": [ "Get" ],
+            "DownstreamPathTemplate": "/api/user",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7003
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 7004
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 7005
+                }
+            ],
+            "FileCacheOptions": {
+                "TtlSeconds": 60,
+                "Region": "defaultUser",
+                "Header": "OC-Caching-Control",
+                "EnableContentHashing": false
+            },
+            "RateLimitOptions": {
+                "ClientWhitelist": [],
+                "EnableRateLimiting": true,
+                "Period": "60s",
+                "PeriodTimespan": 6,
+                "Limit": 2
+            },
+            "Key": "userService",
+            "LoadBalancerOptions": {
+                "Type": "LeastConnection"
+            }
+        },
+        {
+            "UpstreamPathTemplate": "/gateway/api/weatherforecast",
+            "UpstreamHttpMethod": [ "Get" ],
+            "DownstreamPathTemplate": "/api/WeatherForecast",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7002
+                }
+            ],
+            "FileCacheOptions": {
+                "TtlSeconds": 60,
+                "Region": "defaultWeatherforecast",
+                "Header": "OC-Caching-Control",
+                "EnableContentHashing": false
+            },
+            "RateLimitOptions": {
+                "ClientWhitelist": [],
+                "EnableRateLimiting": true,
+                "Period": "60s",
+                "PeriodTimespan": 6,
+                "Limit": 2
+            },
+            "Key": "weatherforecastService"
+        },
+        {
+            "UpstreamPathTemplate": "/gateway/api/auth/{email}/{password}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "DownstreamPathTemplate": "/api/auth/{email}/{password}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7001
+                }
+            ]
+        }
+    ],
+    "Aggregates": [
+        {
+            "RouteKeys": [
+                "userService",
+                "weatherforecastService"
+            ],
+            "UpstreamPathTemplate": "/gateway/api/aggregate"
+        }
+    ]
+}
